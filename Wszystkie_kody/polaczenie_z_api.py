@@ -301,7 +301,7 @@ def procNewsExample(msg):
 
 def main():
 
-    # enter your login credentials here
+    # enter your login credentials here 
     userId = 12345
     password = "password"
 
