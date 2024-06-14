@@ -1,79 +1,117 @@
-from bs4 import BeautifulSoup
-from requests import get
-import pandas as pd
-import numpy as py
-import matplotlib.pyplot as plt
-import math as math
-import re
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import sys
+import time
+import os
+import csv
+from datetime import datetime
 
+if len(sys.argv) < 2:
+    print("Nie podano nazwy spółki")
+    sys.exit(1)
 
-# while True:
+spolka = sys.argv[1]
+file_name = f"{spolka}.csv"
 
-link = "https://www.biznesradar.pl/wycena/ORLEN"
-respons = get(link)
-print(link)
-soup = BeautifulSoup(respons.text, 'html.parser')
-print(soup)
+# Sprawdzenie, czy plik istnieje
+if os.path.exists(file_name):
+    print(f"Dane dla spółki {spolka} są już zapisane w pliku {file_name}. Odczytuję dane...")
+    with open(file_name, mode='r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            print(', '.join(row))
+else:
+    start = time.time()
 
-    # try:
-    #     products = soup.find_all(class_='name')
-    # except:
-    #     print("No i chuj zjebało się!")
-    #     continue
-    # print('*'*50)
-    # print(soup)
-    # print('*'*50)
-    # try:
-    #     price_div = soup.find('span', class_='change goesdown').find('div')
-    # except AttributeError:
-    #    print("Przepraszamy. Nieznaleziono wyników")
-    #    continue
+    # Ustawienie ścieżki do chromedriver i trybu headless
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    service = Service(executable_path='D:\GitHub\Projekt_MS_Programowanie2\Wszystkie_kody\chromedriver.exe')
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    # Otwarcie strony
+    try:
+        driver.get(f'https://www.stockwatch.pl/gpw/{spolka},notowania,wskazniki.aspx')
+    except:
+        print(f"Nie udało się otworzyć strony dla spółki {spolka}.")
+        driver.quit()
+        sys.exit(1)
+    driver.implicitly_wait(10)  # Zamiast sleep, używamy implicit wait
+    time.sleep(1)
     
-    # price = price_div.text.strip()
-    # print("Obecna wycena akcji: ", price)
-    # respons = get(link)
+    # Bezpośrednie wyszukiwanie elementu zawierającego tekst 'WSKAŹNIKI RYNKOWE'
+    elements = driver.find_elements(By.CSS_SELECTOR, 'td')
 
+    # Przetwarzanie elementów
+    kwartalne = []
+    found = False
+    for element in elements:
+        if 'Kurs ' in element.text:
+            found = True
+            break 
 
-    # soup = BeautifulSoup(respons.text,'html.parser')
-    # print(soup)
-    # kwartały = soup.find_all(class_='factPeriod')
-    # quarters = [quarter.b.text for quarter in kwartały]
-    # lista = []
-    # licznik = -1
-    # klasa = soup.find_all(class_='cctabdtdn')
-    # for element in klasa:
-    #     tbody_elements = element.find_all('tbody')
+    if found:
+        start_index = elements.index(element) + 1
+        for i in range(start_index, len(elements)):
+            kwartalne.append(elements[i].text)
+            if 'WSKAŹNIKI RYNKOWE' in elements[i].text:
+                break
+    kwartalne = kwartalne[:-1]
+    QR = []
 
-    #     for tbody in tbody_elements:
-    #         rows = tbody.find_all('tr')
-    #         for row in rows:
-    #             liczby = row.find_all(string=re.compile(r'\d+'))
-    #             for liczba in liczby:
-    #                 licznik += 1
-    #                 lista.append(liczba)
-    #                 if(licznik == (len(quarters) - 1)): 
-    #                     break
-    #             if(licznik == (len(quarters) - 1)): 
-    #                     break
-    #         if(licznik == (len(quarters) - 1)): 
-    #                     break
-                
-    # wartosci = [float(w.replace(',', '.')) for w in lista]
+    try:
+        kurs = driver.find_elements(By.CSS_SELECTOR, 'span.change.goesup')
+        if len(kurs) == 0:
+            raise Exception
+    except:
+        kurs = driver.find_elements(By.CSS_SELECTOR, 'span.change.goesdown')
+    print('-'*50)
+    print(f'Kurs: {kurs[0].text}')
+    print('-'*50)
 
-    # lata_kwartaly = [kw.split() for kw in quarters]
-    # lata = [int(kw[1]) for kw in lata_kwartaly]
-    # kwartaly = [f"{kw[0]} {kw[1]}" for kw in lata_kwartaly]
+    # Zamykanie przeglądarki
+    driver.quit()
 
-    # plt.figure(figsize=(10, 6))
-    # plt.plot(wartosci, marker='o', linestyle='-', color='b')
-    # plt.xticks(range(len(kwartaly)), kwartaly, rotation='vertical')
-    # plt.xlabel('Kwartały')
-    # plt.ylabel('Wartości')
-    # plt.title('Wykres wartości dla poszczególnych kwartałów')
-    # plt.tight_layout()
-    # # plt.show()
+    # Połączenie kwartałów z danymi giełdowymi
+    def current_quarter():
+        now = datetime.now()
+        year = now.year
+        month = now.month
+        if month in [1, 2, 3]:
+            quarter = 1
+        elif month in [4, 5, 6]:
+            quarter = 2
+        elif month in [7, 8, 9]:
+            quarter = 3
+        else:
+            quarter = 4
+        return year, quarter
 
-    # endprog = input("zakończyć program (y/n)?: ")
-    # if endprog == 'y': break
-    # #głupie czyszenie terminala ;)
-    # print("\n"*30)
+    year, quarter = current_quarter()
+    list = [2,3,1,2,3,35,3,1,3]
+    quarter -= 1
+    kwartaly = []
+    kwartalne.reverse()
+    for i in range(len(kwartalne)-1):
+        kwartaly.append(f'Q{quarter} {year}')
+        print(f'{kwartaly[i]} - {kwartalne[i]}')
+        quarter -= 1
+        if quarter < 1:
+            year -= 1
+            quarter = 4
+    print('-'*50)
+    print(f'Czas wykonania: {time.time()-start}')
+
+    # Zapisanie danych do pliku CSV
+    with open(file_name, mode='w', encoding='utf-8', newline='') as file:
+        writer = csv.writer(file)
+        for i in range(len(kwartaly)):
+            writer.writerow([kwartaly[i], kwartalne[i]])
+
+    print(f"Dane dla spółki {spolka} zostały zapisane do pliku {file_name}.")
