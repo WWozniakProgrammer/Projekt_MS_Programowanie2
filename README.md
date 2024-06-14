@@ -1,2 +1,3 @@
 # Projekt_MS_Programowanie2
 ## kiedyś powstanie tu ładna biblioteka z pełną dokumentacją .... kiedyś...
+## mapa myśli: https://miro.com/app/board/uXjVK82LrtI=/
