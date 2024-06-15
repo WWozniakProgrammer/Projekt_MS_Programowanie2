@@ -13,7 +13,10 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 spolka = sys.argv[1]
-file_name = f"{spolka}.csv"
+
+file_name = f"Wszystkie_kody\{spolka}.csv"
+
+# C:\Python_Scripts\Repozytoria_Git\Projekt_MS_Programowanie2\Wszystkie_kody\sunex.csv
 
 # Sprawdzenie, czy plik istnieje
 if os.path.exists(file_name):
@@ -32,7 +35,7 @@ else:
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    service = Service(executable_path='D:\GitHub\Projekt_MS_Programowanie2\Wszystkie_kody\chromedriver.exe')
+    service = Service(executable_path='C:\Python_Scripts\Repozytoria_Git\Projekt_MS_Programowanie2\Wszystkie_kody\chromedriver.exe')
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     # Otwarcie strony
