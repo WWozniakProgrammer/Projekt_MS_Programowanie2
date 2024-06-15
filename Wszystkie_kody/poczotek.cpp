@@ -3,6 +3,8 @@
 #include <string>
 #include <array>
 #include <memory>
+#include "laczenie_z_sql.h"
+
 
 using namespace std;
 // ta funkcja zwraca ścieżkę z pythonem (nawet jak ma się ich kilka to zwraca tą która działa ;)
@@ -35,7 +37,7 @@ int main() {
     try {
         string python_path = get_first_python_path();
         string spolka;
-        cout << "Podaj nazwę spółki: ";
+        cout << "Podaj nazwe spolki: ";
         cin >> spolka;
 
         // Konstruowanie komendy do uruchomienia skryptu Python
@@ -45,11 +47,14 @@ int main() {
         int result = system(command.c_str());
 
         if (result != 0) {
-            cerr << "Wystąpił błąd podczas uruchamiania skryptu Python" << endl;
+            cerr << "Wystapil blad podczas uruchamiania skryptu Python" << endl;
         }
     } catch (const exception& ex) {
-        cerr << "Wystąpił wyjątek: " << ex.what() << endl;
+        cerr << "Wystapił wyjatek: " << ex.what() << endl;
     }
+
+
+
 
     return 0;
 }
