@@ -28,6 +28,7 @@ string get_first_python_path() {
     if (pos != string::npos) {
         result = result.substr(0, pos);
     }
+    cout << "Python path: " << result << endl;
     return result;
 }
 
@@ -39,7 +40,7 @@ int main() {
         cin >> spolka;
 
         // Konstruowanie komendy do uruchomienia skryptu Python
-        string command = python_path + " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrapowanie.py " + spolka;
+        string command = python_path + "C:\\Python_Scripts\\Repozytoria_Git\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrapowanie.py " + spolka;
 
         // Uruchomienie skryptu Python z nazwą spółki jako argumentem
         int result = system(command.c_str());
