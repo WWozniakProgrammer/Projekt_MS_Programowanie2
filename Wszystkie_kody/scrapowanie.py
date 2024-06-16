@@ -53,6 +53,8 @@ else:
     
     # Bezpośrednie wyszukiwanie elementu zawierającego tekst 'WSKAŹNIKI RYNKOWE'
     elements = driver.find_elements(By.CSS_SELECTOR, 'td')
+    fl = driver.find_elements(By.CSS_SELECTOR, 'strong')
+    print(fl[1].text)
 
     # Przetwarzanie elementów
     kwartalne = []
