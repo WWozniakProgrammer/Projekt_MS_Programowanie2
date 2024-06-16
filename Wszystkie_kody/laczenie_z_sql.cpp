@@ -127,8 +127,8 @@ QuoteData* BAZA::getQuotes(const char* sql) { // pobieranie notowan
         return nullptr;
     }
 
-    QuartersData* first_quote;
-    QuartersData* current_quote;
+    QuoteData* first_quote;
+    QuoteData* current_quote;
     first_quote = current_quote;
 
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
