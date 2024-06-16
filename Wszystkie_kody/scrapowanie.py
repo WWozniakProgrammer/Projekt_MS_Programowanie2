@@ -8,13 +8,16 @@ import os
 import csv
 from datetime import datetime
 
+#tutaj ważne jest aby podać ścieżkę do chromedriver.exe
+path_to_chromedriver = 'D:\GitHub\Projekt_MS_Programowanie2\Wszystkie_kody\chromedriver.exe'
+
 if len(sys.argv) < 2:
     print("Nie podano nazwy spółki")
     sys.exit(1)
 
 spolka = sys.argv[1]
 
-file_name = f"Wszystkie_kody\{spolka}.csv"
+file_name = f"{spolka}.csv"
 
 # C:\Python_Scripts\Repozytoria_Git\Projekt_MS_Programowanie2\Wszystkie_kody\sunex.csv
 
@@ -35,7 +38,7 @@ else:
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    service = Service(executable_path='C:\Python_Scripts\Repozytoria_Git\Projekt_MS_Programowanie2\Wszystkie_kody\chromedriver.exe')
+    service = Service(executable_path=path_to_chromedriver)
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     # Otwarcie strony
