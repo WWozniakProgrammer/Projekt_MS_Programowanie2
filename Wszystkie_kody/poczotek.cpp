@@ -34,15 +34,32 @@ string get_first_python_path() {
 }
 
 int main() {
-    //tutaj ważne jest aby podać ścieżkę do pliku scrapowanie.py wraz z spacją na początku i końcu
-    string path_to_scrap = " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrap_kwartal.py ";
+    //tutaj ważne jest aby podać ścieżkę do pliku scrapującego wraz z spacją na początku i końcu
+    string path_to_scrap1 = " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrap_kwartal.py ";
+    string path_to_scrap2 = " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrap_kurs.py ";
+    string path_to_scrap;  
 
     try {
         string python_path = get_first_python_path();
         string spolka;
+        int wybor;
         cout << "Podaj nazwę spółki: ";
         cin >> spolka;
+        cout << "Podaj wybór: " << endl;
+        cout << "1 - Scrapowanie danych kwartalnych" << endl;
+        cout << "2 - Scrapowanie kursu" << endl;
+        cin >> wybor;
 
+        if (wybor == 1) {
+            path_to_scrap = path_to_scrap1;
+        } 
+        else if (wybor == 2) {
+            path_to_scrap = path_to_scrap2;
+        } 
+        else {
+            cerr << "Niepoprawny wybór" << endl;
+            return 1;
+        }
         // Konstruowanie komendy do uruchomienia skryptu Python
         string command = python_path + path_to_scrap + spolka;
 
