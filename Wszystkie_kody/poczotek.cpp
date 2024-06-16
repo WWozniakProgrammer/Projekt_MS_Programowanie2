@@ -3,8 +3,8 @@
 #include <string>
 #include <array>
 #include <memory>
-//#include "laczenie_z_sql.h"
-#include "db.h"
+#include "laczenie_z_sql.h"
+//#include "db.h"
 
 
 using namespace std;
@@ -35,18 +35,10 @@ string get_first_python_path() {
 }
 
 int main() {
-    DB db;
-    db.selectData("SELECT * FROM Spolki");
 
-/*
-    std::string sql = "SELECT name FROM spolki";
-    result = displayData("baza.db", sql);
-    if (result == SQLITE_OK) {
-        std::cout << "Data displayed successfully" << std::endl;
-    } else {
-        std::cerr << "Failed to display data" << std::endl;
-    }
 
+    BAZA db;
+    db.executeSQL("SELECT * FROM Spolki");
 
 
 
@@ -70,7 +62,7 @@ int main() {
     }
 
 
-    */
+
 
     return 0;
 }

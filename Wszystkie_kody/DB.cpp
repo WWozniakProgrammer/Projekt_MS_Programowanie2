@@ -4,7 +4,7 @@
 
 DB::DB()
 {
-	int rc = sqlite3_open("baza1.db", &this->db);
+	int rc = sqlite3_open("baza.db", &this->db);
 
 	if (rc) {
 		std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
@@ -13,11 +13,7 @@ DB::DB()
 		std::cout << "Opened database successfully" << std::endl;
 	}
 
-	const char* createTableSQL = "CREATE TABLE IF NOT EXISTS Players ("
-		"ID INT PRIMARY KEY NOT NULL,"
-		"Name TEXT NOT NULL,"
-		"Score INT NOT NULL);";
-	executeQuery(createTableSQL);
+
 }
 
 void DB::close()
@@ -53,7 +49,7 @@ bool DB::selectData(const char* sql) {
 	}
 
 	while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-		int id = sqlite3_column_int(stmt, 0);
+        const unsigned char* id = sqlite3_column_text(stmt, 0);
 		const unsigned char* name = sqlite3_column_text(stmt, 1);
 		int score = sqlite3_column_int(stmt, 2);
 
