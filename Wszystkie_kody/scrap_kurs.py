@@ -67,8 +67,8 @@ def scrap():
     with open(file_name, mode=mode, encoding='utf-8', newline='') as file:
         writer = csv.writer(file)
         if mode == 'w':
-            writer.writerow(['Symbol', 'Kurs', 'Data'])  # Nagłówek jeśli tworzymy nowy plik
-        writer.writerow([symbol, kurs_text, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+            writer.writerow(['Symbol', 'Data', 'Kurs'])  # Nagłówek jeśli tworzymy nowy plik
+        writer.writerow([symbol, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), kurs_text])
 
     print(f"Kurs dla spółki {spolka} został zapisany do pliku {file_name}.")
 
