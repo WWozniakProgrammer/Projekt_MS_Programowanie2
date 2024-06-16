@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 
+
 using namespace std;
 // ta funkcja zwraca ścieżkę z pythonem (nawet jak ma się ich kilka to zwraca tą która działa ;)
 string get_first_python_path() {
@@ -33,6 +34,9 @@ string get_first_python_path() {
 }
 
 int main() {
+    //tutaj ważne jest aby podać ścieżkę do pliku scrapowanie.py wraz z spacją na początku i końcu
+    string path_to_scrap = " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrapowanie.py ";
+
     try {
         string python_path = get_first_python_path();
         string spolka;
@@ -40,7 +44,7 @@ int main() {
         cin >> spolka;
 
         // Konstruowanie komendy do uruchomienia skryptu Python
-        string command = python_path + "C:\\Python_Scripts\\Repozytoria_Git\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrapowanie.py " + spolka;
+        string command = python_path + path_to_scrap + spolka;
 
         // Uruchomienie skryptu Python z nazwą spółki jako argumentem
         int result = system(command.c_str());
