@@ -14,7 +14,7 @@ if len(sys.argv) < 2:
 
 spolka = sys.argv[1]
 
-file_name = f"Wszystkie_kody\{spolka}.csv"
+file_name = f"{spolka}.csv"
 
 # C:\Python_Scripts\Repozytoria_Git\Projekt_MS_Programowanie2\Wszystkie_kody\sunex.csv
 
@@ -50,6 +50,8 @@ else:
     
     # Bezpośrednie wyszukiwanie elementu zawierającego tekst 'WSKAŹNIKI RYNKOWE'
     elements = driver.find_elements(By.CSS_SELECTOR, 'td')
+    fl = driver.find_elements(By.CSS_SELECTOR, 'strong')
+    print(fl[1].text)
 
     # Przetwarzanie elementów
     kwartalne = []
