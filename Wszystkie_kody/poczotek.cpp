@@ -35,7 +35,7 @@ string get_first_python_path() {
 
 int main() {
     //tutaj ważne jest aby podać ścieżkę do pliku scrapowanie.py wraz z spacją na początku i końcu
-    string path_to_scrap = " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrapowanie.py ";
+    string path_to_scrap = " D:\\GitHub\\Projekt_MS_Programowanie2\\Wszystkie_kody\\scrap_kwartal.py ";
 
     try {
         string python_path = get_first_python_path();
