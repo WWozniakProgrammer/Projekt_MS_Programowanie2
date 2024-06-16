@@ -62,6 +62,7 @@ def scrap():
     elements = driver.find_elements(By.CSS_SELECTOR, 'td')
     fl = driver.find_elements(By.CSS_SELECTOR, 'strong')
     print(fl[1].text)
+    sym = fl[1].text
 
     # Przetwarzanie elementów
     kwartalne = []
@@ -78,17 +79,6 @@ def scrap():
             if 'WSKAŹNIKI RYNKOWE' in elements[i].text:
                 break
     kwartalne = kwartalne[:-1]
-    QR = []
-
-    try:
-        kurs = driver.find_elements(By.CSS_SELECTOR, 'span.change.goesup')
-        if len(kurs) == 0:
-            raise Exception
-    except:
-        kurs = driver.find_elements(By.CSS_SELECTOR, 'span.change.goesdown')
-    print('-'*50)
-    print(f'Kurs: {kurs[0].text}')
-    print('-'*50)
 
     # Zamykanie przeglądarki
     driver.quit()
@@ -99,7 +89,7 @@ def scrap():
     kwartaly = []
     kwartalne.reverse()
     for i in range(len(kwartalne)-1):
-        kwartaly.append(f'Q{quarter} {year}')
+        kwartaly.append([quarter, year])
         print(f'{kwartaly[i]} - {kwartalne[i]}')
         quarter -= 1
         if quarter < 1:
@@ -111,8 +101,9 @@ def scrap():
     # Zapisanie danych do pliku CSV
     with open(file_name, mode='w', encoding='utf-8', newline='') as file:
         writer = csv.writer(file)
-        for i in range(len(kwartaly)):
-            writer.writerow([kwartaly[i], kwartalne[i]])
+        writer.writerow(['SYMBOL','kwartal','rok','cena'])
+        for i in range(len(kwartaly)-1):
+            writer.writerow([f'{sym}',kwartaly[i][0],kwartaly[i][1],kwartalne[i]])
 
     print(f"Dane dla spółki {spolka} zostały zapisane do pliku {file_name}.")
 
@@ -121,17 +112,23 @@ if os.path.exists(file_name):
     print(f"Dane dla spółki {spolka} są już zapisane w pliku {file_name}. Odczytuję dane...")
     with open(file_name, mode='r', encoding='utf-8') as file:
         reader = csv.reader(file)
-        zcsv = next(reader)[0]
-    if zcsv == f'Q{current_quarter()[1]-1} {current_quarter()[0]}':
-        print(zcsv)
+        nagluwek = next(reader)
+        zcsv = next(reader)
+    x = str(zcsv[1])
+    y = str(current_quarter()[1]-1)
+    z = str(zcsv[2])
+    t = str(current_quarter()[0])
+    if (x == y) and (z == t):
         print(f'Q{current_quarter()[1]-1} {current_quarter()[0]}')
         print("Dane są aktualne.")
+        with open(file_name, mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                print(', '.join(row))
     else:
         os.remove(file_name)
         print(f"Usunięto stary plik: {file_name}")
         print("Pobieram nowe dane...")
         scrap()
-    for row in reader:
-        print(', '.join(row))
 else: 
     scrap()
