@@ -167,7 +167,7 @@ QuoteData* BAZA::getQuotes(const char* sql) {
     return first_quote;
 }
 
-
+// testowanie listy
 void BAZA::printCompanyList(CompanyData *head) {
     CompanyData* current = head;
     while (current != nullptr) {
