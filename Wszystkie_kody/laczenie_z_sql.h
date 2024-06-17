@@ -16,15 +16,15 @@ struct QuartersData {
     std::string id_firmy ;
     int rok;
     int kwartal;
-    float cena;
+    double cena;
     QuartersData* next;
 };
 
 
 struct QuoteData {
     std::string id_firmy ;
-    int data_czas;
-    float cena;
+    std::string data_czas;
+    double cena;
     QuoteData* next;
 };
 
@@ -38,7 +38,7 @@ public:
     CompanyData* getCompanies(const char* sql);
     QuartersData* getQuarters(const char* sql);
     QuoteData*  getQuotes(const char* sql);
-
+    void printCompanyList(CompanyData* head);
 
 private:
     sqlite3* db{};

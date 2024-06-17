@@ -40,11 +40,7 @@ bool BAZA::executeSQL(const char* sql) {
 
 
 }
-
-
-
-CompanyData* BAZA::getCompanies(const char* sql) {       //pobieranie  i wysłyłanie spolek
-
+CompanyData* BAZA::getCompanies(const char* sql) {
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(this->db, sql, -1, &stmt, nullptr);
 
@@ -53,18 +49,24 @@ CompanyData* BAZA::getCompanies(const char* sql) {       //pobieranie  i wysły�
         return nullptr;
     }
 
-    CompanyData* first_company;
-    CompanyData* current_company;
-    first_company = current_company;
-
+    CompanyData* first_company = nullptr;
+    CompanyData* current_company = nullptr;
 
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
         const unsigned char* id = sqlite3_column_text(stmt, 0);
         const unsigned char* name = sqlite3_column_text(stmt, 1);
         auto* company = new CompanyData;
+        company->id_firmy = reinterpret_cast<const char*>(id);
+        company->nazwa_spolki = reinterpret_cast<const char*>(name);
         company->next = nullptr;
-        current_company->next = company;
-        current_company = company;
+
+        if (first_company == nullptr) {
+            first_company = company;
+            current_company = company;
+        } else {
+            current_company->next = company;
+            current_company = company;
+        }
     }
 
     if (rc != SQLITE_DONE) {
@@ -79,9 +81,7 @@ CompanyData* BAZA::getCompanies(const char* sql) {       //pobieranie  i wysły�
 
 
 
-
-QuartersData* BAZA::getQuarters(const char* sql) {        //pobieranie notowan kwartalnych
-
+QuartersData* BAZA::getQuarters(const char* sql) {
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(this->db, sql, -1, &stmt, nullptr);
 
@@ -90,20 +90,29 @@ QuartersData* BAZA::getQuarters(const char* sql) {        //pobieranie notowan k
         return nullptr;
     }
 
-    QuartersData* first_quarters;
-    QuartersData* current_quarters;
-    first_quarters = current_quarters;
-
+    QuartersData* first_quarters = nullptr;
+    QuartersData* current_quarters = nullptr;
 
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
         const unsigned char* id = sqlite3_column_text(stmt, 0);
-        const unsigned char* name = sqlite3_column_text(stmt, 1);
-        int score = sqlite3_column_int(stmt, 2);
+        int rok = sqlite3_column_int(stmt, 1);
+        int kwartal = sqlite3_column_int(stmt, 3);
+        double cena = sqlite3_column_double(stmt, 4);
         auto* quarter = new QuartersData;
+        quarter->id_firmy = reinterpret_cast<const char*>(id);
+        quarter->rok = rok;
+        quarter->kwartal = kwartal;
+        quarter->cena = cena;
         quarter->next = nullptr;
-        current_quarters->next = quarter;
-        current_quarters = quarter;
-        std::cout << "ID: " << id << ", Name: " << name << ", Score: " << score << std::endl;
+
+        if (first_quarters == nullptr) {
+            first_quarters = quarter;
+            current_quarters = quarter;
+        } else {
+            current_quarters->next = quarter;
+            current_quarters = quarter;
+        }
+
     }
 
     if (rc != SQLITE_DONE) {
@@ -117,8 +126,7 @@ QuartersData* BAZA::getQuarters(const char* sql) {        //pobieranie notowan k
 
 
 
-QuoteData* BAZA::getQuotes(const char* sql) { // pobieranie notowan
-
+QuoteData* BAZA::getQuotes(const char* sql) {
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(this->db, sql, -1, &stmt, nullptr);
 
@@ -127,20 +135,27 @@ QuoteData* BAZA::getQuotes(const char* sql) { // pobieranie notowan
         return nullptr;
     }
 
-    QuoteData* first_quote;
-    QuoteData* current_quote;
-    first_quote = current_quote;
+    QuoteData* first_quote = nullptr;
+    QuoteData* current_quote = nullptr;
 
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
         const unsigned char* id = sqlite3_column_text(stmt, 0);
-        const unsigned char* name = sqlite3_column_text(stmt, 1);
-        int score = sqlite3_column_int(stmt, 2);
+        const unsigned char* time = sqlite3_column_text(stmt, 1);
+        double cena = sqlite3_column_int(stmt, 2);
         auto* quote = new QuoteData;
+        quote->id_firmy = reinterpret_cast<const char*>(id);
+        quote->data_czas = reinterpret_cast<const char*>(time);
+        quote->cena = cena;
         quote->next = nullptr;
-        current_quote->next = quote;
-        current_quote = quote;
 
-        std::cout << "ID: " << id << ", Name: " << name << ", Score: " << score << std::endl;
+        if (first_quote == nullptr) {
+            first_quote = quote;
+            current_quote = quote;
+        } else {
+            current_quote->next = quote;
+            current_quote = quote;
+        }
+
     }
 
     if (rc != SQLITE_DONE) {
@@ -150,5 +165,14 @@ QuoteData* BAZA::getQuotes(const char* sql) { // pobieranie notowan
     sqlite3_finalize(stmt);
 
     return first_quote;
+}
+
+
+void BAZA::printCompanyList(CompanyData *head) {
+    CompanyData* current = head;
+    while (current != nullptr) {
+        std::cout << "ID: " << current->id_firmy << ", Nazwa Spolki: " << current->nazwa_spolki << std::endl;
+        current = current->next;
+    }
 }
 

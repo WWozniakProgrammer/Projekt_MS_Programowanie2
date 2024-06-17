@@ -4,7 +4,6 @@
 #include <array>
 #include <memory>
 #include "laczenie_z_sql.h"
-//#include "db.h"
 
 
 using namespace std;
@@ -34,11 +33,20 @@ string get_first_python_path() {
     return result;
 }
 
+
+
+
 int main() {
 
 
     BAZA db;
-    db.executeSQL("SELECT * FROM Spolki");
+    std::string sql = "SELECT * FROM Spolki";
+
+    CompanyData* companyList = db.getCompanies(sql.c_str());
+    db.getCompanies("SELECT * FROM Spolki");
+    db.printCompanyList(companyList);
+
+
 
 
 
